@@ -27,3 +27,13 @@ model Product {
   characteristics String[]
   price Int
 }
+
+model FeedbackForm{
+  id Int @id @default(autoincrement())
+  name String
+  phone String
+  email String
+  text String
+  date DateTime @default(now())
+  checkReply Boolean @default(false)
+}
