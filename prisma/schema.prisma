@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id_user Int @id @default(autoincrement())
+  login String
+  email String  @unique
+  name  String
+  lastname String
+  phone String @unique
+  additionalPasswords String[]
+  subcribe Boolean @default(false)
+  hashedPassword String
+
+  chapters Chapter[]
+  loginDetails LoginDetail[]
+
+  @@map("users")
+}
+
+model Chapter {
+  id_chapter Int @id @default(autoincrement())
+  nameChapter String
+  descrChapter String
+  imgChapter String
+
+  userId Int
+  user User @relation(fields: [userId], references: [id_user])
+
+  // loginDetails LoginDetail[]
+
+  @@map("chapters")
+}
+
+model KeyDecrept {
+  id_key_decrept Int @id @default(autoincrement())
+  keyDecreptName String
+  
+  LoginDetail LoginDetail[]
+}
+
+model LoginDetail {
+  id_login_details Int @id @default(autoincrement())
+  websiteLoginDetail String
+  nameLoginDetail String
+  hashedPassword String
+  logoUserDetails String
+  descriptionLoginDetail String
+  userId Int
+  user User @relation(fields: [userId], references: [id_user])
+
+  keyDecreptId Int
+  keyDecreptKey KeyDecrept @relation(fields: [keyDecreptId], references: [id_key_decrept])
+
+  @@map("loginDetails")
+}
+
