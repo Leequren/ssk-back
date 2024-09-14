@@ -1,5 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../..";
+import { unlink } from "fs";
+import path from "path";
+import { uploadDir } from "../../config/consts";
 
 export async function removeProductHandler(
   req: FastifyRequest<{
@@ -15,6 +18,17 @@ export async function removeProductHandler(
     const deleteProduct = await prisma.product.delete({
       where: { id: idProduct },
     });
+
+    unlink(
+      path.join(uploadDir, `/${deleteProduct.imageUrl.split("/")[2]}`),
+      function (err) {
+        if (err) {
+          console.error(err);
+          return reply.send({ message: "error deleted image product" });
+        }
+        console.log(`File ${deleteProduct.imageUrl} deleted!`);
+      }
+    );
 
     reply.status(200).send({ message: "Product removed successfully" });
   } catch (err) {

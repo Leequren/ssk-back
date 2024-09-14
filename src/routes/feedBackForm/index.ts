@@ -5,7 +5,15 @@ import { setReplyFalseHandler, setReplyTrueHandler } from "./setReply";
 
 export async function setupFeedbackFormRoutes(app: FastifyInstance) {
   app.post("/feedbackForms/create", createFormHandler);
-  app.get("/feedbackForms", getFormsHandler);
-  app.post("feedbackForms/setReplyTrueForm", setReplyTrueHandler);
-  app.post("feedbackForms/setReplyFalseForm", setReplyFalseHandler);
+  app.get("/feedbackForms", { preHandler: app.authenticate }, getFormsHandler);
+  app.post(
+    "/feedbackForms/setReplyTrueForm",
+    { preHandler: app.authenticate },
+    setReplyTrueHandler
+  );
+  app.post(
+    "/feedbackForms/setReplyFalseForm",
+    { preHandler: app.authenticate },
+    setReplyFalseHandler
+  );
 }

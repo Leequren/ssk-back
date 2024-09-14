@@ -8,11 +8,26 @@ import fastifyFormbody from "@fastify/formbody";
 import fastifyMultipart from "@fastify/multipart";
 import fastifyStatic from "@fastify/static";
 import cors from "@fastify/cors";
+import fastifyJwt, { FastifyJwtNamespace } from "@fastify/jwt";
+import { jwtKey } from "./config/consts";
+import { setupDecorators } from "./hooks";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 export const prisma = new PrismaClient();
 
+declare module "fastify" {
+  export interface FastifyInstance
+    extends FastifyJwtNamespace<{ namespace: "security" }> {
+    authenticate: any;
+  }
+}
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: { id: number; login: string };
+  }
+}
 async function checkDdatabaseConnection() {
   try {
     await prisma.$connect();
@@ -38,6 +53,11 @@ const main = async () => {
       prefix: "/public",
     });
 
+    await app.register(fastifyJwt, {
+      secret: jwtKey,
+    });
+    setupDecorators(app);
+    console.log(app.authenticate);
     await app.register(setupRoutes);
     await checkDdatabaseConnection();
 

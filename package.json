@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx nodemon",
+    "generateKey": "npx ts-node ./scripts/generateKey.ts",
+    "createAdminUser": "npx ts-node ./scripts/createUser.ts",
     "migrate": "npx prisma migrate dev"
   },
   "dependencies": {
