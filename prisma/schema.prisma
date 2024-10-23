@@ -20,6 +20,15 @@ model User {
   hashedPassword String
 }
 
+model PartProduct {
+  id Int @id @default(autoincrement())
+  title String
+  imageUrl String
+  description String
+  characteristics String[]
+  price Int
+}
+
 model Product {
   id Int @id @default(autoincrement())
   title String
