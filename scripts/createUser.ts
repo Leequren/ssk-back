@@ -15,4 +15,4 @@ async function createAdminUser(login: string, password: string) {
   console.log(user);
 }
 
-createAdminUser("admin", "artem505050");
+createAdminUser("admin", "ssk_admin_user");
