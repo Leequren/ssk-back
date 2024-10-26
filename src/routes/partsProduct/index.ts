@@ -9,6 +9,14 @@ import { removeProductHandler } from "../products/removeProduct";
 
 export async function setupPartProductRoutes(app: FastifyInstance) {
   app.get("/product/part/", getPartsProductHandler);
-  app.post("/product/part/", createPartProductHandler);
-  app.delete("/product/part/", removePartByIdHandler);
+  app.post(
+    "/product/part/",
+    { onRequest: app.authenticate },
+    createPartProductHandler
+  );
+  app.delete(
+    "/product/part/",
+    { onRequest: app.authenticate },
+    removePartByIdHandler
+  );
 }

@@ -46,8 +46,12 @@ const main = async () => {
     console.log(typeof PORT);
 
     await app.register(cors);
-    await app.register(fastifyMultipart);
-    await app.register(fastifyFormbody);
+    await app.register(fastifyMultipart, {
+      limits: {
+        fileSize: 20 * 1024 * 1024,
+      },
+    });
+    // await app.register(fastifyFormbody);
     await app.register(fastifyStatic, {
       root: path.join(__dirname, "../", "public/"),
       prefix: "/public",

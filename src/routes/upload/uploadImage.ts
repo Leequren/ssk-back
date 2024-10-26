@@ -17,15 +17,24 @@ export async function uploadImageHandler(
   const filename = uniqueNameGenerator(image.filename);
   const saveTo = path.join(uploadDir, filename);
   console.log(saveTo);
-  const writeStream = createWriteStream(saveTo);
-  file.pipe(writeStream);
 
-  writeStream.on("finish", () => {
+  const writeStreamPromise = new Promise<void>((resolve, reject) => {
+    const writeStream = createWriteStream(saveTo);
+    file.pipe(writeStream);
+
+    writeStream.on("finish", () => {
+      resolve();
+    });
+
+    writeStream.on("error", (error) => {
+      reject(error);
+    });
+  });
+
+  try {
+    await writeStreamPromise;
     return reply.send({ path: `/public/${filename}` });
-  });
-  writeStream.on("error", () => {
+  } catch (error) {
     return reply.send({ message: "error uploading" });
-  });
-
-  return reply.send({ path: `/public/${filename}` });
+  }
 }
